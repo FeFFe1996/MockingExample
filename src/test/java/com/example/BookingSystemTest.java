@@ -92,4 +92,25 @@ class BookingSystemTest{
         assertEquals("Rummet existerar inte", e.getMessage());
     }
 
+    @Test
+    void bookRoomCheckRoomIsUnavailableReturnsFalse() {
+        Room room = new Room("1501", "Suite");
+        roomRepository.save(room);
+        bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(3));
+
+        boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime().plusDays(4));
+
+        assertTrue(!checkIfAvailable);
+    }
+
+    @Test
+    void bookRoomCheckRoomIsAvailableReturnsTrue() {
+        Room room = new Room("1501", "Suite");
+        roomRepository.save(room);
+        bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2));
+
+        boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(3), timeProvider.getCurrentTime().plusDays(4));
+
+        assertTrue(checkIfAvailable);
+    }
 }
