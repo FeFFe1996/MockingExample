@@ -1,8 +1,13 @@
 package com.example;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,66 +16,42 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 
+@ExtendWith(MockitoExtension.class)
 class BookingSystemTest{
     private List<Room> roomList = new ArrayList<>();
     @Mock
-    private TimeProvider timeProvider = new TimeProvider() {
-        @Override
-        public LocalDateTime getCurrentTime() {
-            return LocalDateTime.now();
-        }
-    };
-    @Mock
-    private RoomRepository roomRepository = new RoomRepository() {
-        @Override
-        public Optional<Room> findById(String id) {
-            Optional<Room> optList = roomList.stream().filter(r -> r.getId().equals(id)).findAny();
-            return optList;
-        }
-
-        @Override
-        public List<Room> findAll() {
-            return roomList.stream().toList();
-        }
-
-        @Override
-        public void save(Room room) {
-            roomList.add(room);
-        }
-    };
+    private TimeProvider timeProvider;
 
     @Mock
-    private NotificationService notificationService = new NotificationService() {
-        @Override
-        public void sendBookingConfirmation(Booking booking) throws NotificationException {
+    private RoomRepository roomRepository;
 
-        }
+    @Mock
+    private NotificationService notificationService;
 
-        @Override
-        public void sendCancellationConfirmation(Booking booking) throws NotificationException {
+    @InjectMocks
+    BookingSystem bookingSystem;
 
-        }
-    };
-
-
-    BookingSystem bookingSystem = new BookingSystem(timeProvider, roomRepository, notificationService);
-
+    @BeforeEach
+    void setup(){
+        Mockito.when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+    }
     @Test
     void bookRoomShouldReturnErrorWhenNull(){
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-           bookingSystem.bookRoom(null, null, null);
+            bookingSystem.bookRoom(null, null, null);
         });
 
         assertEquals("Bokning kräver giltiga start- och sluttider samt rum-id", e.getMessage());
     }
 
     @Test
-    void bookRoomShouldReturnErrorWhenStartDateIsBeforeToday() {
+    void bookRoomDateIsBeforeToday() {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-           bookingSystem.bookRoom("1503", timeProvider.getCurrentTime().minusDays(2), timeProvider.getCurrentTime().plusDays(2));
+            bookingSystem.bookRoom("1503", timeProvider.getCurrentTime().minusDays(2), timeProvider.getCurrentTime().plusDays(2));
         });
-        assertEquals("Kan inte boka tid i dåtid", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("Kan inte boka tid i dåtid");
     }
 
     @Test
@@ -78,34 +59,64 @@ class BookingSystemTest{
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1503", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime());
         });
-        assertEquals("Sluttid måste vara efter starttid", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("Sluttid måste vara efter starttid");
     }
 
     @Test
-    void bookRoomNonExistentRoomShouldReturnError(){
+    void bookRoomRoomNotExisting(){
         Room room = new Room("1501", "Suite");
+        Mockito.doAnswer(invocation -> {
+            roomList.add(room);
+            return null;
+        }).when(roomRepository).save(room);
         roomRepository.save(room);
+
+        Mockito.doAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            return (Optional) roomList.stream().filter(p -> p.getId().equals(arg)).findAny();
+        }).when(roomRepository).findById(anyString());
+
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.bookRoom("1502", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2));
         });
 
-        assertEquals("Rummet existerar inte", e.getMessage());
+        assertThat(e.getMessage()).isEqualTo("Rummet existerar inte");
     }
 
     @Test
-    void bookRoomCheckRoomIsUnavailableReturnsFalse() {
-        Room room = new Room("1501", "Suite");
+    void bookRoomIsUnavailable() {
+        Room room = new Room("1501", "2");
+        Mockito.when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        Mockito.doAnswer(invocation -> {
+            roomList.add(room);
+            return null;
+        }).when(roomRepository).save(room);
+
+        Mockito.doAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            return (Optional) roomList.stream().filter(p -> p.getId().equals(arg)).findFirst();
+        }).when(roomRepository).findById(anyString());
+
         roomRepository.save(room);
+
         bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(3));
 
         boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime().plusDays(4));
 
-        assertTrue(!checkIfAvailable);
+        assertThat(!checkIfAvailable);
     }
 
     @Test
-    void bookRoomCheckRoomIsAvailableReturnsTrue() {
+    void bookRoomIsAvailable() {
         Room room = new Room("1501", "Suite");
+        Mockito.doAnswer(invocation -> {
+            roomList.add(room);
+            return null;
+        }).when(roomRepository).save(room);
+        Mockito.doAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            return (Optional) roomList.stream().filter(p -> p.getId().equals(arg)).findFirst();
+        }).when(roomRepository).findById(anyString());
         roomRepository.save(room);
         bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2));
 
