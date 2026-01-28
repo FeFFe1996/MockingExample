@@ -40,7 +40,7 @@ class BookingSystemTest{
     @Test
     void bookRoomShouldReturnErrorWhenNull(){
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.bookRoom(null, null, null);
+            bookingSystem.bookRoom(null, null, timeProvider.getCurrentTime().plusDays(4));
         });
 
         assertEquals("Bokning kräver giltiga start- och sluttider samt rum-id", e.getMessage());
@@ -103,7 +103,7 @@ class BookingSystemTest{
 
         boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime().plusDays(4));
 
-        assertThat(!checkIfAvailable);
+        assertThat(checkIfAvailable).isEqualTo(false);
     }
 
     @Test
