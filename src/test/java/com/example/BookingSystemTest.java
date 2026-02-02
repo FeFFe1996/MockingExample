@@ -3,7 +3,6 @@ package com.example;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -103,7 +102,7 @@ class BookingSystemTest{
 
         boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime().plusDays(4));
 
-        assertThat(checkIfAvailable).isEqualTo(false);
+        assertThat(checkIfAvailable).isFalse();
     }
 
     @Test
@@ -122,6 +121,6 @@ class BookingSystemTest{
 
         boolean checkIfAvailable = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(3), timeProvider.getCurrentTime().plusDays(4));
 
-        assertTrue(checkIfAvailable);
+        assertThat(checkIfAvailable).isTrue();
     }
 }
