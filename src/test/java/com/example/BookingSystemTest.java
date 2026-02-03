@@ -137,9 +137,8 @@ class BookingSystemTest{
 
         doNothing().when(roomRepository).save(any(Room.class));
 
-        doThrow(new NotificationException("Notification Failed"))
-                .when(notificationService)
-                .sendBookingConfirmation(any(Booking.class));
+        doThrow(new NotificationException("Network error"))
+                .when(notificationService).sendBookingConfirmation(any());
 
         boolean check = bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2));
 
