@@ -1,6 +1,5 @@
 package com.example;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,8 +47,10 @@ class BookingSystemTest{
     @Test
     void bookRoomDateIsBeforeToday() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        LocalDateTime start = timeProvider.getCurrentTime().minusDays(2);
+        LocalDateTime end = timeProvider.getCurrentTime().plusDays(2);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.bookRoom("1503", timeProvider.getCurrentTime().minusDays(2), timeProvider.getCurrentTime().plusDays(2));
+            bookingSystem.bookRoom("1503", start,end );
         });
         assertThat(e.getMessage()).isEqualTo("Kan inte boka tid i dåtid");
     }
@@ -79,9 +80,10 @@ class BookingSystemTest{
             String arg = invocation.getArgument(0);
             return (Optional) roomList.stream().filter(p -> p.getId().equals(arg)).findAny();
         }).when(roomRepository).findById(anyString());
-
+        LocalDateTime start = timeProvider.getCurrentTime().plusDays(1);
+        LocalDateTime end = timeProvider.getCurrentTime().plusDays(2);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.bookRoom("1502", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2));
+            bookingSystem.bookRoom("1502", start, end);
         });
 
         assertThat(e.getMessage()).isEqualTo("Rummet existerar inte");
@@ -169,7 +171,7 @@ class BookingSystemTest{
     }
 
     @Test
-    void succesfullyBookRoom() throws NotificationException {
+    void succesfullyBookRoom() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
         Room room = new Room("1501", "Suite");
         Mockito.doAnswer(invocation -> {
@@ -250,9 +252,13 @@ class BookingSystemTest{
         roomRepository.save(room);
         roomRepository.save(room2);
 
+        List<Room> roomCheck = new ArrayList<>();
+        roomCheck.add(room);
+        roomCheck.add(room2);
+
         List<Room> availableRooms = bookingSystem.getAvailableRooms(timeProvider.getCurrentTime(), timeProvider.getCurrentTime().plusDays(2));
 
-        assertThat(availableRooms.size()).isEqualTo(2);
+        assertThat(availableRooms).isEqualTo(roomCheck);
     }
 
     @Test
