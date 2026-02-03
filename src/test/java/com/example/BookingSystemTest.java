@@ -37,8 +37,9 @@ class BookingSystemTest{
     @Test
     void bookRoomShouldReturnErrorWhenNull(){
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        LocalDateTime end = timeProvider.getCurrentTime().plusDays(4);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.bookRoom(null, null, timeProvider.getCurrentTime().plusDays(4));
+            bookingSystem.bookRoom(null, null, end);
         });
 
         assertEquals("Bokning kräver giltiga start- och sluttider samt rum-id", e.getMessage());
@@ -56,8 +57,10 @@ class BookingSystemTest{
     @Test
     void bookRoomShouldReturnErrorWhenEndDateIsBeforeStartDate() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        LocalDateTime start = timeProvider.getCurrentTime().plusDays(2);
+        LocalDateTime end = timeProvider.getCurrentTime();
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.bookRoom("1503", timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime());
+            bookingSystem.bookRoom("1503", start, end);
         });
         assertThat(e.getMessage()).isEqualTo("Sluttid måste vara efter starttid");
     }
@@ -194,8 +197,10 @@ class BookingSystemTest{
     @Test
     void getAvailableRoomsEndtimeBeforeStarTime() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        LocalDateTime start = timeProvider.getCurrentTime().plusDays(4);
+        LocalDateTime end = LocalDateTime.now().plusDays(2);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            bookingSystem.getAvailableRooms(timeProvider.getCurrentTime().plusDays(2), timeProvider.getCurrentTime());
+            bookingSystem.getAvailableRooms(start, end);
         });
 
         assertThat(e.getMessage()).isEqualTo("Sluttid måste vara efter starttid");
@@ -282,7 +287,6 @@ class BookingSystemTest{
     void CancelBookingShouldReturnErrorWhenCancelingDuringBooking() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
         Room room = new Room("1501", "Suite");
-        Room room2 = new Room("1502", "Family");
         Mockito.doAnswer(invocation -> {
             Room arg = invocation.getArgument(0);
             roomList.add(arg);
@@ -309,7 +313,6 @@ class BookingSystemTest{
     void CancelBookingShouldReturnErrorWhenCancelAfterBooking() {
         when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
         Room room = new Room("1501", "Suite");
-        Room room2 = new Room("1502", "Family");
         Mockito.doAnswer(invocation -> {
             Room arg = invocation.getArgument(0);
             roomList.add(arg);
@@ -330,6 +333,33 @@ class BookingSystemTest{
         });
 
         assertThat(e.getMessage()).isEqualTo("Kan inte avboka påbörjad eller avslutad bokning");
+    }
+
+    @Test
+    void notificationErrorWhenCanceling() throws NotificationException {
+        when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        Room room = new Room("1501", "Suite");
+        Mockito.doAnswer(invocation -> {
+            Room arg = invocation.getArgument(0);
+            roomList.add(arg);
+            return null;
+        }).when(roomRepository).save(any(Room.class));
+        Mockito.doAnswer(invocation -> {
+            return roomList.stream().toList();
+        }).when(roomRepository).findAll();
+
+        roomRepository.save(room);
+
+        doThrow(new NotificationException("Network error"))
+                .when(notificationService).sendCancellationConfirmation(any());
+
+        Booking booking = new Booking("1", "1501", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(3));
+        room.addBooking(booking);
+
+        boolean check = bookingSystem.cancelBooking("1");
+        assertThat(check).isTrue();
+
+        verify(notificationService).sendCancellationConfirmation(any(Booking.class));
     }
 
     @Test
