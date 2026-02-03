@@ -128,6 +128,24 @@ class BookingSystemTest{
     }
 
     @Test
+    void succesfullyBookRoom() {
+        Mockito.when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        Room room = new Room("1501", "Suite");
+        Mockito.doAnswer(invocation -> {
+            roomList.add(room);
+            return null;
+        }).when(roomRepository).save(room);
+        Mockito.doAnswer(invocation -> {
+            String arg = invocation.getArgument(0);
+            return (Optional) roomList.stream().filter(p -> p.getId().equals(arg)).findFirst();
+        }).when(roomRepository).findById(anyString());
+        roomRepository.save(room);
+
+        assertThat(bookingSystem.bookRoom("1501", timeProvider.getCurrentTime().plusDays(1), timeProvider.getCurrentTime().plusDays(2))).isTrue();
+    }
+
+
+    @Test
     void GetAvailableThrowErrorWhenTimeNUll() {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             bookingSystem.getAvailableRooms(null, null);
@@ -251,7 +269,7 @@ class BookingSystemTest{
     }
 
     @Test
-    void CancelBookingShouldReturnErrorWhenCancelingafterBooking() {
+    void CancelBookingShouldReturnErrorWhenCancelAfterBooking() {
         Mockito.when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
         Room room = new Room("1501", "Suite");
         Room room2 = new Room("1502", "Family");
@@ -277,5 +295,25 @@ class BookingSystemTest{
         assertThat(e.getMessage()).isEqualTo("Kan inte avboka påbörjad eller avslutad bokning");
     }
 
+    @Test
+    void fullTestOfBookingSystemBookAndCancel() {
+        Mockito.when(timeProvider.getCurrentTime()).thenReturn(LocalDateTime.now());
+        Room room = new Room("1501", "Suite");
 
+        Mockito.doAnswer(invocation -> {
+            Room arg = invocation.getArgument(0);
+            roomList.add(arg);
+            return null;
+        }).when(roomRepository).save(any(Room.class));
+        Mockito.doAnswer(invocation -> {
+            return roomList.stream().toList();
+        }).when(roomRepository).findAll();
+
+        roomRepository.save(room);
+
+        Booking booking = new Booking("1", "1501", LocalDateTime.now().plusDays(2), LocalDateTime.now().plusDays(4));
+        room.addBooking(booking);
+
+        assertThat(bookingSystem.cancelBooking("1")).isTrue();
+    }
 }
