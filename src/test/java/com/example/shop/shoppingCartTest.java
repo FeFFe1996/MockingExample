@@ -25,20 +25,20 @@ class shoppingCartTest {
     ShoppingCart shoppingCart;
 
     @Test
-    void addToCart(){
-        shoppingCart = new ShoppingCart(this.products);
-        Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
-        shoppingCart.addToCart(product);
-        assertThat(shoppingCart.getCart().size()).isEqualTo(1);
-    }
-
-    @Test
     void cannotCreateShoppingCartWithNullValues(){
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             ShoppingCart errorCart = new ShoppingCart(null);
         });
 
-        assertThat(e.getMessage()).isEqualTo("Discounts or cart cannot be null");
+        assertThat(e.getMessage()).isEqualTo("customer id cannot be null");
+    }
+
+    @Test
+    void addToCart(){
+        shoppingCart = new ShoppingCart(this.products);
+        Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product);
+        assertThat(shoppingCart.getCart().size()).isEqualTo(1);
     }
 
     @Test
