@@ -97,6 +97,7 @@ class shoppingCartTest {
         shoppingCart.removeOneFromCart(product1.getID());
 
         assertThat(shoppingCart.getCart().getFirst().getCartAmount()).isEqualTo(1);
+        assertThat(shoppingCart.getCart().getFirst().getStockAmount()).isEqualTo(9);
     }
 
 }

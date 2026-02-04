@@ -56,5 +56,15 @@ public class ShoppingCart {
         cart.removeIf(products -> products.getID().equals(id));
     }
 
-
+    public void removeOneFromCart(String id){
+        int amount = cart.stream().filter(c -> c.getID().equals(id)).findAny().get().getCartAmount();
+        if (amount == 1) {
+            cart.removeIf(products -> products.getID().equals(id));
+        } else {
+            cart.stream().filter(c -> c.getID().equals(id)).findAny().ifPresent(c -> {
+                c.removeOneAmount();
+                c.addStockAmount();
+            });
+    }
+}
 }
