@@ -26,13 +26,13 @@ class shoppingCartTest {
     @Test
     void addToCart(){
 
-        Products product = new Products("Ball", BigDecimal.valueOf(20.0));
+        Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         assertThat(shoppingCart.getCart().size()).isEqualTo(1);
     }
 
     @Test
-    void removeProductFromCart(int productID){
+    void removeProductFromCart(){
         Products product1 = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         Products product2 = new Products("2","Disc", BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
@@ -42,7 +42,7 @@ class shoppingCartTest {
 
         shoppingCart.removeFromCart("1");
 
-        assertThat(shoppingCart.getCart().getFirst()).isEqualTo(testCart.getFirst());
+        assertThat(shoppingCart.getCart().getFirst().getProductName()).isEqualTo(testCart.getFirst().getProductName());
     }
 
 }

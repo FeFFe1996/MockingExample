@@ -19,4 +19,8 @@ public class ShoppingCart {
     public List<Products> getCart() {
         return cart.stream().toList();
     }
+
+    public void removeFromCart(String id){
+        cart.removeIf(products -> products.getID().equals(id));
+    }
 }
