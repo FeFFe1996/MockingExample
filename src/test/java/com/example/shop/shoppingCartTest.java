@@ -3,6 +3,9 @@ package com.example.shop;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.math.BigDecimal;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -18,7 +21,7 @@ class shoppingCartTest {
 
     @Test
     void addToCart(){
-        Products product = new Products("Ball", 20.0);
+        Products product = new Products("Ball", BigDecimal.valueOf(20.0));
 
         shoppingCart.addToCart(product);
 
