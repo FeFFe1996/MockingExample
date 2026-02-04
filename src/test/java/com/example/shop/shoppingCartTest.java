@@ -32,7 +32,7 @@ class shoppingCartTest {
     }
 
     @Test
-    void removeFromCart(int productID){
+    void removeProductFromCart(int productID){
         Products product1 = new Products("Ball", BigDecimal.valueOf(20.0));
         Products product2 = new Products("Disc", BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
