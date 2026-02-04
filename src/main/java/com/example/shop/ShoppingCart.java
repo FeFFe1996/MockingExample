@@ -1,4 +1,4 @@
 package com.example.shop;
 
-public class products {
+public class ShoppingCart {
 }
