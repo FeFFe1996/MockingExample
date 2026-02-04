@@ -30,4 +30,6 @@ public class ShoppingCart {
     public void removeFromCart(String id){
         cart.removeIf(products -> products.getID().equals(id));
     }
+
+
 }
