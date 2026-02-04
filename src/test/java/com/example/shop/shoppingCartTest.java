@@ -43,7 +43,6 @@ class shoppingCartTest {
 
         assertThat(exception.getMessage()).isEqualTo("Amount must be greater than zero");
     }
-    
 
     @Test
     void addToCart(){
@@ -68,6 +67,10 @@ class shoppingCartTest {
     @Test
     void addProductReducesStock(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product = new Products("1", "Ball",1, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product);
+
+        assertThat(shoppingCart.getProductStockAmount(product.getID())).isEqualTo(0);
     }
 
     @Test
@@ -83,6 +86,17 @@ class shoppingCartTest {
         shoppingCart.removeFromCart("1");
 
         assertThat(shoppingCart.getCart().getFirst().getProductName()).isEqualTo(testCart.getFirst().getProductName());
+    }
+
+    @Test
+    void removeOneAmountFromProduct(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product1);
+        shoppingCart.addToCart(product1);
+        shoppingCart.removeOneFromCart(product1.getID());
+
+        assertThat(shoppingCart.getCart().getFirst().getCartAmount()).isEqualTo(1);
     }
 
 }

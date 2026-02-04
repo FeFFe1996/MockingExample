@@ -30,6 +30,7 @@ public class ShoppingCart {
             System.out.println("Added product " + products.getID() + " with name: " + products.getProductName());
         }
         products.addOneAmount();
+        products.removeStockAmount();
     }
 
     public int getProductCartAmount(String productID){
@@ -37,11 +38,21 @@ public class ShoppingCart {
         return productAmount.stream().findFirst().get().getCartAmount();
     }
 
+    public int getProductStockAmount(String productID){
+        Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
+        return productAmount.stream().findFirst().get().getStockAmount();
+    }
+
+
     public List<Products> getCart() {
         return cart.stream().toList();
     }
 
     public void removeFromCart(String id){
+        cart.stream().filter(c -> c.getID().equals(id)).findAny().ifPresent(c -> {
+            int i = c.getCartAmount();
+            c.setStockAmount(c.getStockAmount() + i);
+        });
         cart.removeIf(products -> products.getID().equals(id));
     }
 

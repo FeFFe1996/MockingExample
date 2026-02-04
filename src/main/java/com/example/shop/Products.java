@@ -47,12 +47,21 @@ public class Products {
         return stockAmount;
     }
 
+    public void setStockAmount(int amount) {
+        this.stockAmount = amount;
+    }
+
     public void addStockAmount(){
         stockAmount++;
     }
 
     public void removeStockAmount(){
-        stockAmount--;
+        if (stockAmount <= 0) {
+            throw new IllegalArgumentException("cannot remove from stock amount, its zero");
+        } else {
+            stockAmount--;
+        }
+
     }
 
     public void setPrice(BigDecimal price) {
