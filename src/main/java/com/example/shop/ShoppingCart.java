@@ -20,7 +20,20 @@ public class ShoppingCart {
     }
 
     public void addToCart(Products products){
-        cart.add(products);
+        if (products == null) {
+            throw new IllegalArgumentException("product cannot be null");
+        }
+
+        if (cart.stream().filter(c -> c.getID().equals(products.getID())).findAny().isEmpty()) {
+            cart.add(products);
+            products.addOneAmount();
+            System.out.println("Added product " + products.getID() + " with name: " + products.getProductName());
+        }
+        products.addOneAmount();
+    }
+
+    public int getProductAmount(String productID){
+        return 0;
     }
 
     public List<Products> getCart() {

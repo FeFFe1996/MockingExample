@@ -37,7 +37,11 @@ class shoppingCartTest {
 
     @Test
     void productShouldThrowErrorWhenProductAmountIsZeroOrLess(){
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Products products1 = new Products("1", "Ball", -1, BigDecimal.valueOf(20.0));
+        });
 
+        assertThat(exception.getMessage()).isEqualTo("Amount must be greater than zero");
     }
 
     @Test
@@ -54,15 +58,19 @@ class shoppingCartTest {
     }
 
 
-
     @Test
     void addOneMoreOfProduct(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
-        shoppingCart.addOne(product.getID());
+        shoppingCart.addToCart(product);
 
-        assertThat(shoppingCart.getCart().getFirst().getproductAmount()).isEqualTo(2);
+        assertThat(shoppingCart.getProductAmount(product.getID())).isEqualTo(2);
+    }
+
+    @Test
+    void addProductReducesStock(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
     }
 
     @Test
