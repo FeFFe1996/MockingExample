@@ -36,18 +36,40 @@ class shoppingCartTest {
     }
 
     @Test
+    void productShouldThrowErrorWhenProductAmountIsZeroOrLess(){
+
+    }
+
+    @Test
+    void addToCartshouldThrowErrorWhenProductAmountIsZero(){
+
+    }
+
+    @Test
     void addToCart(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
-        Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
+        Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         assertThat(shoppingCart.getCart().size()).isEqualTo(1);
+    }
+
+
+
+    @Test
+    void addOneMoreOfProduct(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product);
+        shoppingCart.addOne(product.getID());
+
+        assertThat(shoppingCart.getCart().getFirst().getproductAmount()).isEqualTo(2);
     }
 
     @Test
     void removeProductFromCart(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
-        Products product1 = new Products("1", "Ball", BigDecimal.valueOf(20.0));
-        Products product2 = new Products("2","Disc", BigDecimal.valueOf(15.0));
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2","Disc", 5, BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
         testCart.add(product2);
         shoppingCart.addToCart(product1);
