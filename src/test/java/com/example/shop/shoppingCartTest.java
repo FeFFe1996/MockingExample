@@ -65,7 +65,8 @@ class shoppingCartTest {
         shoppingCart.addToCart(product);
         shoppingCart.addToCart(product);
 
-        assertThat(shoppingCart.getProductAmount(product.getID())).isEqualTo(2);
+        assertThat(shoppingCart.getProductCartAmount(product.getID())).isEqualTo(2);
+        System.out.println(shoppingCart.getProductCartAmount(product.getID()));
     }
 
     @Test

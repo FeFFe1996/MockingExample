@@ -2,6 +2,7 @@ package com.example.shop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ShoppingCart {
@@ -26,14 +27,14 @@ public class ShoppingCart {
 
         if (cart.stream().filter(c -> c.getID().equals(products.getID())).findAny().isEmpty()) {
             cart.add(products);
-            products.addOneAmount();
             System.out.println("Added product " + products.getID() + " with name: " + products.getProductName());
         }
         products.addOneAmount();
     }
 
-    public int getProductAmount(String productID){
-        return 0;
+    public int getProductCartAmount(String productID){
+        Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
+        return productAmount.stream().findFirst().get().getCartAmount();
     }
 
     public List<Products> getCart() {

@@ -54,7 +54,7 @@ public class Products {
     public void removeStockAmount(){
         stockAmount--;
     }
-    
+
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
