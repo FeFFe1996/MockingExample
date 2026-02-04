@@ -43,11 +43,7 @@ class shoppingCartTest {
 
         assertThat(exception.getMessage()).isEqualTo("Amount must be greater than zero");
     }
-
-    @Test
-    void addToCartshouldThrowErrorWhenProductAmountIsZero(){
-
-    }
+    
 
     @Test
     void addToCart(){
