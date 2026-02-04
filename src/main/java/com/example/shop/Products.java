@@ -43,6 +43,18 @@ public class Products {
         cartAmount--;
     }
 
+    public int getStockAmount() {
+        return stockAmount;
+    }
+
+    public void addStockAmount(){
+        stockAmount++;
+    }
+
+    public void removeStockAmount(){
+        stockAmount--;
+    }
+    
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
