@@ -65,6 +65,10 @@ public class ShoppingCart {
                 c.removeOneAmount();
                 c.addStockAmount();
             });
+        }
     }
-}
+
+    public void removeAllFromCart(){
+        cart = new ArrayList<>();
+    }
 }

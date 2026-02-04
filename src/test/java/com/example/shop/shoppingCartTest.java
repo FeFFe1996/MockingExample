@@ -36,6 +36,17 @@ class shoppingCartTest {
     }
 
     @Test
+    void productsCannotBeNull(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            Products errorProduct = null;
+            shoppingCart.addToCart(errorProduct);
+        });
+
+        assertThat(exception.getMessage()).isEqualTo("product cannot be null");
+    }
+
+    @Test
     void productShouldThrowErrorWhenProductAmountIsZeroOrLess(){
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             Products products1 = new Products("1", "Ball", -1, BigDecimal.valueOf(20.0));
@@ -101,6 +112,18 @@ class shoppingCartTest {
     }
 
     @Test
+    void removeOneWillRemoveProductIfCartAmountIsZero(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2","Disc", 5, BigDecimal.valueOf(15.0));
+        shoppingCart.addToCart(product1);
+        shoppingCart.addToCart(product2);
+
+        shoppingCart.removeOneFromCart("1");
+        assertThat(shoppingCart.getCart().size()).isEqualTo(1);
+    }
+
+    @Test
     void removeAllProductsFromCart(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
@@ -111,7 +134,6 @@ class shoppingCartTest {
         shoppingCart.removeAllFromCart();
 
         assertThat(shoppingCart.getCart().isEmpty()).isTrue();
-
     }
 
 }
