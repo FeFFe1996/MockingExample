@@ -7,9 +7,10 @@ public class ShoppingCart {
     private List<Products> cart;
     private Discounts discounts;
 
-    public ShoppingCart(Discounts discounts, List<Products> cart){
+    public ShoppingCart(List<Products> cart){
+        if (cart == null)
+            throw new IllegalArgumentException("Discounts or cart cannot be null");
         this.cart = cart;
-        this.discounts = discounts;
     }
 
     public void addToCart(Products products){

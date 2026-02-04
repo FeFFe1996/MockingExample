@@ -18,21 +18,32 @@ class shoppingCartTest {
     @Mock
     private Discounts discount;
 
+    @Mock
     private List<Products> products = new ArrayList<>();
 
     @InjectMocks
-    ShoppingCart shoppingCart = new ShoppingCart(discount, products);
+    ShoppingCart shoppingCart;
 
     @Test
     void addToCart(){
-
+        shoppingCart = new ShoppingCart(this.products);
         Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         assertThat(shoppingCart.getCart().size()).isEqualTo(1);
     }
 
     @Test
+    void cannotCreateShoppingCartWithNullValues(){
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            ShoppingCart errorCart = new ShoppingCart(null);
+        });
+
+        assertThat(e.getMessage()).isEqualTo("Discounts or cart cannot be null");
+    }
+
+    @Test
     void removeProductFromCart(){
+        shoppingCart = new ShoppingCart(this.products);
         Products product1 = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         Products product2 = new Products("2","Disc", BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
