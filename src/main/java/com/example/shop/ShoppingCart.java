@@ -2,15 +2,21 @@ package com.example.shop;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ShoppingCart {
+    private String cartId;
+    private String customerID;
     private List<Products> cart;
     private Discounts discounts;
 
-    public ShoppingCart(List<Products> cart){
-        if (cart == null)
-            throw new IllegalArgumentException("Discounts or cart cannot be null");
-        this.cart = cart;
+
+    public ShoppingCart(String customerID){
+        if (customerID == null)
+            throw new IllegalArgumentException("customer id cannot be null");
+        this.customerID = customerID;
+        this.cartId = UUID.randomUUID().toString();
+        this.cart = new ArrayList<>();
     }
 
     public void addToCart(Products products){

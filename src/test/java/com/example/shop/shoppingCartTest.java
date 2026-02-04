@@ -21,6 +21,8 @@ class shoppingCartTest {
     @Mock
     private List<Products> products = new ArrayList<>();
 
+    private Customer customer = new Customer("1", "Testson");
+
     @InjectMocks
     ShoppingCart shoppingCart;
 
@@ -35,7 +37,7 @@ class shoppingCartTest {
 
     @Test
     void addToCart(){
-        shoppingCart = new ShoppingCart(this.products);
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         assertThat(shoppingCart.getCart().size()).isEqualTo(1);
@@ -43,7 +45,7 @@ class shoppingCartTest {
 
     @Test
     void removeProductFromCart(){
-        shoppingCart = new ShoppingCart(this.products);
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", BigDecimal.valueOf(20.0));
         Products product2 = new Products("2","Disc", BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
