@@ -5,6 +5,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,16 +18,17 @@ class shoppingCartTest {
     @Mock
     private Discounts discount;
 
+    private List<Products> products = new ArrayList<>();
+
     @InjectMocks
-    ShoppingCart shoppingCart;
+    ShoppingCart shoppingCart = new ShoppingCart(discount, products);
 
     @Test
     void addToCart(){
+
         Products product = new Products("Ball", BigDecimal.valueOf(20.0));
-
         shoppingCart.addToCart(product);
-
-        assertThat(shoppingCart.getCart().size).isEqualTo(1);
+        assertThat(shoppingCart.getCart().size()).isEqualTo(1);
     }
 
 }
