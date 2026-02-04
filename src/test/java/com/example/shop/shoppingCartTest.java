@@ -100,4 +100,18 @@ class shoppingCartTest {
         assertThat(shoppingCart.getCart().getFirst().getStockAmount()).isEqualTo(9);
     }
 
+    @Test
+    void removeAllProductsFromCart(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product1);
+        shoppingCart.addToCart(product2);
+
+        shoppingCart.removeAllFromCart();
+
+        assertThat(shoppingCart.getCart().isEmpty()).isTrue();
+
+    }
+
 }
