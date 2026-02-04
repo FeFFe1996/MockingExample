@@ -33,14 +33,14 @@ class shoppingCartTest {
 
     @Test
     void removeProductFromCart(int productID){
-        Products product1 = new Products("Ball", BigDecimal.valueOf(20.0));
-        Products product2 = new Products("Disc", BigDecimal.valueOf(15.0));
+        Products product1 = new Products("1", "Ball", BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2","Disc", BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
         testCart.add(product2);
         shoppingCart.addToCart(product1);
         shoppingCart.addToCart(product2);
 
-        shoppingCart.removeFromCart(1);
+        shoppingCart.removeFromCart("1");
 
         assertThat(shoppingCart.getCart().getFirst()).isEqualTo(testCart.getFirst());
     }
