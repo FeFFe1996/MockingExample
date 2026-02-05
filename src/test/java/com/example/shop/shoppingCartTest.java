@@ -136,4 +136,15 @@ class shoppingCartTest {
         assertThat(shoppingCart.getCart().isEmpty()).isTrue();
     }
 
+    @Test
+    void calculateTotalPrice(){
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(10.0));
+        shoppingCart.addToCart(product1);
+        shoppingCart.addToCart(product2);
+
+        assertThat(shoppingCart.calculateTotalPrice).isEqualTo(30.0);
+    }
+
 }
