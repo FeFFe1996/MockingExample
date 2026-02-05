@@ -144,7 +144,9 @@ class shoppingCartTest {
         shoppingCart.addToCart(product1);
         shoppingCart.addToCart(product2);
 
-        assertThat(shoppingCart.calculateTotalPrice).isEqualTo(30.0);
+        BigDecimal totalPrice = shoppingCart.calculateTotalPrice();
+
+        assertThat(totalPrice).isEqualTo(30.0);
     }
 
 }
