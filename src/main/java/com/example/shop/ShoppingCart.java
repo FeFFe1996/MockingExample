@@ -1,5 +1,6 @@
 package com.example.shop;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,5 +71,15 @@ public class ShoppingCart {
 
     public void removeAllFromCart(){
         cart = new ArrayList<>();
+    }
+
+    public BigDecimal calculateTotalPrice(){
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice = BigDecimal.ZERO;
+        for (Products product : cart) {
+           tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
+           totalPrice = totalPrice.add(tempPrice);
+        }
+        return totalPrice;
     }
 }

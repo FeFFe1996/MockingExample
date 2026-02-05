@@ -18,9 +18,6 @@ class shoppingCartTest {
     @Mock
     private Discounts discount;
 
-    @Mock
-    private List<Products> products = new ArrayList<>();
-
     private Customer customer = new Customer("1", "Testson");
 
     @InjectMocks
@@ -146,7 +143,7 @@ class shoppingCartTest {
 
         BigDecimal totalPrice = shoppingCart.calculateTotalPrice();
 
-        assertThat(totalPrice).isEqualTo(30.0);
+        assertThat(totalPrice).isEqualTo(BigDecimal.valueOf(30.0));
     }
 
 }
