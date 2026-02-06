@@ -1,5 +1,6 @@
 package com.example.shop;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -16,6 +17,11 @@ class shoppingCartTest {
     @InjectMocks
     ShoppingCart shoppingCart;
 
+    @BeforeEach
+    void setUp() {
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+    }
+
     @Test
     void cannotCreateShoppingCartWithNullValues(){
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
@@ -27,7 +33,6 @@ class shoppingCartTest {
 
     @Test
     void productsCannotBeNull(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             Products errorProduct = null;
             shoppingCart.addToCart(errorProduct);
@@ -47,7 +52,6 @@ class shoppingCartTest {
 
     @Test
     void addToCart(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         assertThat(shoppingCart.getCart().size()).isEqualTo(1);
@@ -56,7 +60,6 @@ class shoppingCartTest {
 
     @Test
     void addOneMoreOfProduct(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
         shoppingCart.addToCart(product);
@@ -67,7 +70,6 @@ class shoppingCartTest {
 
     @Test
     void addProductReducesStock(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product = new Products("1", "Ball",1, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
 
@@ -76,7 +78,6 @@ class shoppingCartTest {
 
     @Test
     void removeProductFromCart(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         Products product2 = new Products("2","Disc", 5, BigDecimal.valueOf(15.0));
         List<Products> testCart = new ArrayList<>();
@@ -91,7 +92,6 @@ class shoppingCartTest {
 
     @Test
     void removeOneAmountFromProduct(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
         shoppingCart.addToCart(product1);
@@ -103,7 +103,6 @@ class shoppingCartTest {
 
     @Test
     void removeOneWillRemoveProductIfCartAmountIsZero(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         Products product2 = new Products("2","Disc", 5, BigDecimal.valueOf(15.0));
         shoppingCart.addToCart(product1);
@@ -115,7 +114,6 @@ class shoppingCartTest {
 
     @Test
     void removeAllProductsFromCart(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
@@ -128,7 +126,6 @@ class shoppingCartTest {
 
     @Test
     void calculateTotalPrice(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(10.0));
         shoppingCart.addToCart(product1);
@@ -141,7 +138,6 @@ class shoppingCartTest {
 
     @Test
     void priceDiscountCannotBeLessThanZero() {
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
 
@@ -154,7 +150,6 @@ class shoppingCartTest {
 
     @Test
     void priceDiscountCannotBeGreaterThanHundred() {
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
 
@@ -165,8 +160,15 @@ class shoppingCartTest {
     }
 
     @Test
+    void addDiscountShouldReturnVoidIfProductIsNull(){
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            shoppingCart.addDiscountToProduct(null, BigDecimal.valueOf(10));
+        });
+        assertThat(e.getMessage()).isEqualTo("product id cannot be null");
+    }
+
+    @Test
     void calculatePriceWithDiscount(){
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20));
         shoppingCart.addToCart(product1);
         shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(25));
@@ -176,7 +178,6 @@ class shoppingCartTest {
 
     @Test
     void priceDiscountOnWholeCartTotalPrice() {
-        shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(10.0));
         shoppingCart.addToCart(product1);
