@@ -32,6 +32,16 @@ class shoppingCartTest {
     }
 
     @Test
+    void cannotCreateShoppingCartWithEmptyValues(){
+        Customer customerTest = new Customer("", "Testson");
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            ShoppingCart errorCart = new ShoppingCart(customerTest.getCustommerID());
+        });
+
+        assertThat(e.getMessage()).isEqualTo("customer id cannot be empty");
+    }
+
+    @Test
     void productsCannotBeNull(){
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             Products errorProduct = null;

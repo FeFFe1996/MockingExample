@@ -14,6 +14,8 @@ public class ShoppingCart {
     public ShoppingCart(String customerID){
         if (customerID == null)
             throw new IllegalArgumentException("customer id cannot be null");
+        if (customerID.isEmpty())
+            throw new IllegalArgumentException("customer id cannot be empty");
         this.customerID = customerID;
         this.cartId = UUID.randomUUID().toString();
         this.cart = new ArrayList<>();
