@@ -83,17 +83,19 @@ public class ShoppingCart {
         return totalPrice;
     }
 
-    public void addDiscountToProduct(String productID, int percentage){
-        if (percentage < 0 || percentage > 100)
+    public void addDiscountToProduct(String productID, BigDecimal percentage){
+        if (percentage.intValue() < 0 || percentage.intValue() > 100)
             throw new IllegalArgumentException("percentage must be between 0 and 100");
 
         if (productID == null)
             throw new IllegalArgumentException("product id cannot be null");
 
         if(cart.stream().filter(c -> c.getID().equals(productID)).findAny().isPresent()){
-            double percent = (double) (percentage / 100);
+            BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
             cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
-                c.setPrice(c.getPrice().multiply(new BigDecimal(percent)));
+                BigDecimal currentPrice = c.getPrice();
+                BigDecimal newPrice = currentPrice.multiply(percent);
+                c.setPrice(newPrice);
             });
         }
     }

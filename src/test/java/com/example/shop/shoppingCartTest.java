@@ -153,7 +153,7 @@ class shoppingCartTest {
         shoppingCart.addToCart(product1);
 
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            shoppingCart.addDiscount(product1.getID(), -10);
+            shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(-10));
         });
 
         assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
@@ -166,7 +166,7 @@ class shoppingCartTest {
         shoppingCart.addToCart(product1);
 
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            shoppingCart.addDiscount(product1.getID(), 110);
+            shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(110));
         });
         assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
     }
@@ -176,9 +176,9 @@ class shoppingCartTest {
         shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20));
         shoppingCart.addToCart(product1);
-        shoppingCart.addDiscount(product1.getID(), 25);
+        shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(25));
 
-        assertThat(shoppingCart.calculateTotalPrice()).isEqualTo(BigDecimal.valueOf(15.0));
+        assertThat(shoppingCart.calculateTotalPrice()).isEqualByComparingTo(BigDecimal.valueOf(15.0));
     }
 
 }
