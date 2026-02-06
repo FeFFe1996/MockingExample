@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class shoppingCartTest {
+class ShoppingCartTest {
     private Customer customer = new Customer("Testson");
 
     @InjectMocks
@@ -25,7 +25,7 @@ class shoppingCartTest {
     @Test
     void cannotCreateShoppingCartWithNullValues(){
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            ShoppingCart errorCart = new ShoppingCart(null);
+            new ShoppingCart(null);
         });
 
         assertThat(e.getMessage()).isEqualTo("customer id cannot be null");
@@ -34,8 +34,9 @@ class shoppingCartTest {
     @Test
     void cannotCreateShoppingCartWithEmptyValues(){
         Customer customerTest = new Customer("", "Testson");
+        String customerId = customerTest.getCustommerID();
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            ShoppingCart errorCart = new ShoppingCart(customerTest.getCustommerID());
+            new ShoppingCart(customerId);
         });
 
         assertThat(e.getMessage()).isEqualTo("customer id cannot be empty");
@@ -53,8 +54,9 @@ class shoppingCartTest {
 
     @Test
     void productShouldThrowErrorWhenProductAmountIsZeroOrLess(){
+        BigDecimal price = BigDecimal.valueOf(20.0);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            Products products1 = new Products("1", "Ball", -1, BigDecimal.valueOf(20.0));
+            new Products("1", "Ball", -1, price);
         });
 
         assertThat(exception.getMessage()).isEqualTo("Amount must be greater than zero");
@@ -83,7 +85,7 @@ class shoppingCartTest {
         Products product = new Products("1", "Ball",1, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
 
-        assertThat(shoppingCart.getProductStockAmount(product.getID())).isEqualTo(0);
+        assertThat(shoppingCart.getProductStockAmount(product.getID())).isZero();
     }
 
     @Test
@@ -131,7 +133,7 @@ class shoppingCartTest {
 
         shoppingCart.removeAllFromCart();
 
-        assertThat(shoppingCart.getCart().isEmpty()).isTrue();
+        assertThat(shoppingCart.getCart().isEmpty());
     }
 
     @Test
@@ -150,9 +152,11 @@ class shoppingCartTest {
     void priceDiscountCannotBeLessThanZero() {
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
+        String productId = product1.getID();
+        BigDecimal discount = BigDecimal.valueOf(-10.0);
 
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(-10));
+            shoppingCart.addDiscountToProduct(productId, discount);
         });
 
         assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
@@ -162,17 +166,19 @@ class shoppingCartTest {
     void priceDiscountCannotBeGreaterThanHundred() {
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product1);
-
+        String productId = product1.getID();
+        BigDecimal discount = BigDecimal.valueOf(110.0);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(110));
+            shoppingCart.addDiscountToProduct(productId, discount);
         });
         assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
     }
 
     @Test
     void addDiscountShouldReturnVoidIfProductIsNull(){
+        BigDecimal discountAmount = BigDecimal.valueOf(10);
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            shoppingCart.addDiscountToProduct(null, BigDecimal.valueOf(10));
+            shoppingCart.addDiscountToProduct(null, discountAmount);
         });
         assertThat(e.getMessage()).isEqualTo("product id cannot be null");
     }
