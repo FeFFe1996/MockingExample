@@ -147,6 +147,31 @@ class shoppingCartTest {
     }
 
     @Test
+    void priceDiscountCannotBeLessThanZero() {
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product1);
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            shoppingCart.addDiscount(product1.getID(), -10);
+        });
+
+        assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
+    }
+
+    @Test
+    void priceDiscountCannotBeGreaterThanHundred() {
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        shoppingCart.addToCart(product1);
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            shoppingCart.addDiscount(product1.getID(), 110);
+        });
+        assertThat(e.getMessage()).isEqualTo("percentage must be between 0 and 100");
+    }
+
+    @Test
     void calculatePriceWithDiscount(){
         shoppingCart = new ShoppingCart(customer.getCustommerID());
         Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20));
