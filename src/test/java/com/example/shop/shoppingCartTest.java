@@ -12,7 +12,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class shoppingCartTest {
-    private Customer customer = new Customer("1", "Testson");
+    private Customer customer = new Customer("Testson");
 
     @InjectMocks
     ShoppingCart shoppingCart;
