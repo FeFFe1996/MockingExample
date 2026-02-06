@@ -15,9 +15,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class shoppingCartTest {
-    @Mock
-    private Discounts discount;
-
     private Customer customer = new Customer("1", "Testson");
 
     @InjectMocks
@@ -179,6 +176,18 @@ class shoppingCartTest {
         shoppingCart.addDiscountToProduct(product1.getID(), BigDecimal.valueOf(25));
 
         assertThat(shoppingCart.calculateTotalPrice()).isEqualByComparingTo(BigDecimal.valueOf(15.0));
+    }
+
+    @Test
+    void priceDiscountOnWholeCart() {
+        shoppingCart = new ShoppingCart(customer.getCustommerID());
+        Products product1 = new Products("1", "Ball", 10, BigDecimal.valueOf(20.0));
+        Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(10.0));
+        shoppingCart.addToCart(product1);
+        shoppingCart.addToCart(product2);
+        shoppingCart.addDiscountToCart(BigDecimal.valueOf(25));
+
+        assertThat(shoppingCart.calculateTotalPrice()).isEqualByComparingTo(BigDecimal.valueOf(22.5));
     }
 
 }
