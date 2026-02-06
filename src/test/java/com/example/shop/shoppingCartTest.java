@@ -185,9 +185,8 @@ class shoppingCartTest {
         Products product2 = new Products("2", "Pipe", 10, BigDecimal.valueOf(10.0));
         shoppingCart.addToCart(product1);
         shoppingCart.addToCart(product2);
-        shoppingCart.addDiscountToCart(BigDecimal.valueOf(25));
 
-        assertThat(shoppingCart.calculateTotalPrice()).isEqualByComparingTo(BigDecimal.valueOf(22.5));
+        assertThat(shoppingCart.calculateTotalPriceWithDiscount()).isEqualByComparingTo(BigDecimal.valueOf(22.5));
     }
 
 }
