@@ -11,8 +11,6 @@ public class ShoppingCart {
     private String customerID;
     private List<Products> cart;
 
-
-
     public ShoppingCart(String customerID){
         if (customerID == null)
             throw new IllegalArgumentException("customer id cannot be null");
