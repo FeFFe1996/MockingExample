@@ -2,7 +2,6 @@ package com.example.shop;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,9 +9,6 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 class shoppingCartTest {
     private Customer customer = new Customer("1", "Testson");
