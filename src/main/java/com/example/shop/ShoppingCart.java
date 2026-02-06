@@ -10,7 +10,7 @@ public class ShoppingCart {
     private String cartId;
     private String customerID;
     private List<Products> cart;
-    private Discounts discounts;
+
 
 
     public ShoppingCart(String customerID){
@@ -98,6 +98,17 @@ public class ShoppingCart {
                 c.setPrice(newPrice);
             });
         }
+    }
+
+    public BigDecimal calculateTotalPriceWithDiscount(BigDecimal percentage){
+        BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice = BigDecimal.ZERO;
+        for (Products product : cart) {
+            tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
+            totalPrice = totalPrice.add(tempPrice);
+        }
+        return totalPrice.multiply(percent);
     }
 
 
