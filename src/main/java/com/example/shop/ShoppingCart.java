@@ -1,0 +1,116 @@
+package com.example.shop;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public class ShoppingCart {
+    private String cartId;
+    private String customerID;
+    private List<Products> cart;
+
+    public ShoppingCart(String customerID){
+        if (customerID == null)
+            throw new IllegalArgumentException("customer id cannot be null");
+        if (customerID.isEmpty())
+            throw new IllegalArgumentException("customer id cannot be empty");
+        this.customerID = customerID;
+        this.cartId = UUID.randomUUID().toString();
+        this.cart = new ArrayList<>();
+    }
+
+    public void addToCart(Products products){
+        if (products == null) {
+            throw new IllegalArgumentException("product cannot be null");
+        }
+
+        if (cart.stream().filter(c -> c.getID().equals(products.getID())).findAny().isEmpty()) {
+            cart.add(products);
+        }
+        products.addOneAmount();
+        products.removeStockAmount();
+    }
+
+    public int getProductCartAmount(String productID){
+
+        Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
+        return productAmount.stream().findFirst().get().getCartAmount();
+    }
+
+    public int getProductStockAmount(String productID){
+
+        Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
+        return productAmount.stream().findFirst().get().getStockAmount();
+    }
+
+
+    public List<Products> getCart() {
+        return cart.stream().toList();
+    }
+
+    public void removeFromCart(String productID){
+        cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
+            int i = c.getCartAmount();
+            c.setStockAmount(c.getStockAmount() + i);
+        });
+        cart.removeIf(products -> products.getID().equals(productID));
+    }
+
+    public void removeOneFromCart(String productID){
+        int amount = cart.stream().filter(c -> c.getID().equals(productID)).findAny().get().getCartAmount();
+        if (amount == 1) {
+            cart.removeIf(products -> products.getID().equals(productID));
+        } else {
+            cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
+                c.removeOneAmount();
+                c.addStockAmount();
+            });
+        }
+    }
+
+    public void removeAllFromCart(){
+        cart = new ArrayList<>();
+    }
+
+    public BigDecimal calculateTotalPrice(){
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice;
+        for (Products product : cart) {
+           tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
+           totalPrice = totalPrice.add(tempPrice);
+        }
+        return totalPrice;
+    }
+
+    public void addDiscountToProduct(String productID, BigDecimal percentage){
+        if (percentage.intValue() < 0 || percentage.intValue() > 100)
+            throw new IllegalArgumentException("percentage must be between 0 and 100");
+
+        if (productID == null || productID.isEmpty())
+            throw new IllegalArgumentException("product id cannot be null");
+
+        if(cart.stream().filter(c -> c.getID().equals(productID)).findAny().isPresent()){
+            BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
+            cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
+                BigDecimal currentPrice = c.getPrice();
+                BigDecimal newPrice = currentPrice.multiply(percent);
+                c.setPrice(newPrice);
+            });
+        }
+    }
+
+    public BigDecimal calculateTotalPriceWithDiscount(BigDecimal percentage){
+        if (percentage.intValue() < 0 || percentage.intValue() > 100)
+            throw new IllegalArgumentException("percentage must be between 0 and 100");
+        BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice;
+        for (Products product : cart) {
+            tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
+            totalPrice = totalPrice.add(tempPrice);
+        }
+        return totalPrice.multiply(percent);
+    }
+}
