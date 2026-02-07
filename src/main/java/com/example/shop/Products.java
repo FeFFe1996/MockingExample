@@ -1,7 +1,6 @@
 package com.example.shop;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public class Products {
     private final String id;
