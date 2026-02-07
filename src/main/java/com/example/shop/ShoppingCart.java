@@ -28,7 +28,6 @@ public class ShoppingCart {
 
         if (cart.stream().filter(c -> c.getID().equals(products.getID())).findAny().isEmpty()) {
             cart.add(products);
-            System.out.println("Added product " + products.getID() + " with name: " + products.getProductName());
         }
         products.addOneAmount();
         products.removeStockAmount();
@@ -77,7 +76,7 @@ public class ShoppingCart {
 
     public BigDecimal calculateTotalPrice(){
         BigDecimal totalPrice = BigDecimal.ZERO;
-        BigDecimal tempPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice;
         for (Products product : cart) {
            tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
            totalPrice = totalPrice.add(tempPrice);
@@ -107,7 +106,7 @@ public class ShoppingCart {
             throw new IllegalArgumentException("percentage must be between 0 and 100");
         BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
         BigDecimal totalPrice = BigDecimal.ZERO;
-        BigDecimal tempPrice = BigDecimal.ZERO;
+        BigDecimal tempPrice;
         for (Products product : cart) {
             tempPrice = product.getPrice().multiply(new BigDecimal(product.getCartAmount()));
             totalPrice = totalPrice.add(tempPrice);

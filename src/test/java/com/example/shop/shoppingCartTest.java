@@ -64,12 +64,13 @@ class ShoppingCartTest {
 
     @Test
     void shouldThrowErrorWhenProductIdIsNullOrEmpty(){
+        BigDecimal price = BigDecimal.valueOf(20.0);
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            new Products(null, "Ball", 1, BigDecimal.valueOf(20.0));
+            new Products(null, "Ball", 1, price);
         });
 
         Exception exception2 = assertThrows(IllegalArgumentException.class, () -> {
-            new Products("", "Ball", 1, BigDecimal.valueOf(20.0));
+            new Products("", "Ball", 1, price);
         });
         assertThat(exception.getMessage()).isEqualTo("product id cannot be null");
         assertThat(exception2.getMessage()).isEqualTo("product id cannot be empty");
