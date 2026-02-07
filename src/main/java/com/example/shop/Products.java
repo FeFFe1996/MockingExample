@@ -11,6 +11,7 @@ public class Products {
     private BigDecimal price;
 
     public Products(String id, String name, int stockAmount,BigDecimal price){
+        checkId(id);
         this.id = id;
         this.productName = name;
         if (stockAmount < 0){
@@ -23,6 +24,13 @@ public class Products {
 
     public String getID(){
         return this.id;
+    }
+
+    private static void checkId(String productID) {
+        if (productID == null)
+            throw new IllegalArgumentException("product id cannot be null");
+        if (productID.isEmpty())
+            throw new IllegalArgumentException("product id cannot be empty");
     }
 
     public void setProductName(String name){

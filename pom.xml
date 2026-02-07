@@ -103,7 +103,7 @@
                     </targetClasses>
                     <targetTests>
                         <param>com.example.BookingSystemTest</param>
-                        <param>com.example.shop.shoppingCartTest</param>
+                        <param>com.example.shop.ShoppingCartTest</param>
                     </targetTests>
                 </configuration>
             </plugin>

@@ -35,11 +35,13 @@ public class ShoppingCart {
     }
 
     public int getProductCartAmount(String productID){
+
         Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
         return productAmount.stream().findFirst().get().getCartAmount();
     }
 
     public int getProductStockAmount(String productID){
+
         Optional<Products> productAmount = cart.stream().filter(c -> c.getID().equals(productID)).findAny();
         return productAmount.stream().findFirst().get().getStockAmount();
     }
@@ -49,20 +51,20 @@ public class ShoppingCart {
         return cart.stream().toList();
     }
 
-    public void removeFromCart(String id){
-        cart.stream().filter(c -> c.getID().equals(id)).findAny().ifPresent(c -> {
+    public void removeFromCart(String productID){
+        cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
             int i = c.getCartAmount();
             c.setStockAmount(c.getStockAmount() + i);
         });
-        cart.removeIf(products -> products.getID().equals(id));
+        cart.removeIf(products -> products.getID().equals(productID));
     }
 
-    public void removeOneFromCart(String id){
-        int amount = cart.stream().filter(c -> c.getID().equals(id)).findAny().get().getCartAmount();
+    public void removeOneFromCart(String productID){
+        int amount = cart.stream().filter(c -> c.getID().equals(productID)).findAny().get().getCartAmount();
         if (amount == 1) {
-            cart.removeIf(products -> products.getID().equals(id));
+            cart.removeIf(products -> products.getID().equals(productID));
         } else {
-            cart.stream().filter(c -> c.getID().equals(id)).findAny().ifPresent(c -> {
+            cart.stream().filter(c -> c.getID().equals(productID)).findAny().ifPresent(c -> {
                 c.removeOneAmount();
                 c.addStockAmount();
             });
@@ -87,7 +89,7 @@ public class ShoppingCart {
         if (percentage.intValue() < 0 || percentage.intValue() > 100)
             throw new IllegalArgumentException("percentage must be between 0 and 100");
 
-        if (productID == null)
+        if (productID == null || productID.isEmpty())
             throw new IllegalArgumentException("product id cannot be null");
 
         if(cart.stream().filter(c -> c.getID().equals(productID)).findAny().isPresent()){
@@ -101,6 +103,8 @@ public class ShoppingCart {
     }
 
     public BigDecimal calculateTotalPriceWithDiscount(BigDecimal percentage){
+        if (percentage.intValue() < 0 || percentage.intValue() > 100)
+            throw new IllegalArgumentException("percentage must be between 0 and 100");
         BigDecimal percent = BigDecimal.valueOf(1).subtract(percentage.divide(new BigDecimal(100)));
         BigDecimal totalPrice = BigDecimal.ZERO;
         BigDecimal tempPrice = BigDecimal.ZERO;
@@ -110,6 +114,4 @@ public class ShoppingCart {
         }
         return totalPrice.multiply(percent);
     }
-
-
 }

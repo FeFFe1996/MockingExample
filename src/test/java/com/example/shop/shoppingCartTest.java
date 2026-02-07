@@ -63,6 +63,19 @@ class ShoppingCartTest {
     }
 
     @Test
+    void shouldThrowErrorWhenProductIdIsNullOrEmpty(){
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Products(null, "Ball", 1, BigDecimal.valueOf(20.0));
+        });
+
+        Exception exception2 = assertThrows(IllegalArgumentException.class, () -> {
+            new Products("", "Ball", 1, BigDecimal.valueOf(20.0));
+        });
+        assertThat(exception.getMessage()).isEqualTo("product id cannot be null");
+        assertThat(exception2.getMessage()).isEqualTo("product id cannot be empty");
+    }
+
+    @Test
     void addToCart(){
         Products product = new Products("1", "Ball",10, BigDecimal.valueOf(20.0));
         shoppingCart.addToCart(product);
