@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.10.2</version>
+            <version>6.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -90,11 +90,11 @@
                 <artifactId>pitest-maven</artifactId>
                 <version>1.22.1</version>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.pitest</groupId>
-                        <artifactId>pitest-junit5-plugin</artifactId>
-                        <version>1.2.1</version>
-                    </dependency>
+<!--                    <dependency>-->
+<!--                        <groupId>org.pitest</groupId>-->
+<!--                        <artifactId>pitest-junit5-plugin</artifactId>-->
+<!--                        <version>1.2.1</version>-->
+<!--                    </dependency>-->
                 </dependencies>
                 <configuration>
                     <verbose>true</verbose>
